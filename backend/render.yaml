@@ -9,11 +9,9 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: MONGODB_URI
+        sync: false        # paste your MongoDB Atlas connection string here
       - key: IGDB_CLIENT_ID
-        sync: false        # you fill this in the Render dashboard
+        sync: false
       - key: IGDB_CLIENT_SECRET
-        sync: false        # you fill this in the Render dashboard
-    disk:
-      name: cracktrack-db
-      mountPath: /opt/render/project/src
-      sizeGB: 1
+        sync: false
