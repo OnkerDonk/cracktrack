@@ -134,14 +134,14 @@ function formatIgdbGame(g) {
 
 async function bulkImportHistory(forceRedo=false) {
   const meta = readMeta();
-  if (meta.history_imported && !forceRedo) { console.log('History already imported ('+meta.history_total+' games). Use /api/reimport to redo.'); return; }
+  if (meta.history_imported && !forceRedo) { console.log('History already imported ('+meta.history_total+' games). Visit /api/reimport to redo.'); return; }
   if (!process.env.IGDB_CLIENT_ID) { console.warn('No IGDB credentials — skipping history import'); return; }
-  console.log('Starting 2-year bulk import (batch mode)...');
+  console.log('Starting 2-year bulk import...');
   const now = Date.now();
-  const tenYearsAgo = now - (2 * 365.25 * 24 * 60 * 60 * 1000);
+  const twoYearsAgo = now - (2 * 365.25 * 24 * 60 * 60 * 1000);
   const SIX_MONTHS = 6 * 30 * 24 * 60 * 60 * 1000;
   let totalAdded = 0, chunkEnd = now, chunkStart = chunkEnd - SIX_MONTHS;
-  while (chunkEnd > tenYearsAgo) {
+  while (chunkEnd > twoYearsAgo) {
     const label = new Date(chunkStart).toISOString().slice(0,7);
     console.log(`  Fetching ${label}...`);
     let offset = 0, chunkBatch = [];
@@ -173,27 +173,55 @@ function extractSceneFilename(title) {
   return gm ? gm[1] : null;
 }
 
+// Flairs that mean the post is news/discussion, NOT a crack release
+const NEWS_FLAIRS = ['NEWS','DISCUSSION','WEEKLY','QUESTION','META','REQUEST','TOOLS','TUTORIAL','HUMOR','SATIRE','MOD POST','ANNOUNCEMENT'];
+
 function parseRedditPost(post) {
-  const title = post.title || '', flair = (post.link_flair_text||'').toUpperCase(), fullText = title+' '+(post.selftext||'');
+  const title = post.title || '';
+  const flair = (post.link_flair_text||'').toUpperCase().trim();
+  const fullText = title + ' ' + (post.selftext||'');
   let status = 'unknown', gameName = null, crackGroup = null;
+
+  // If post flair is a news/discussion type, mark as news immediately — do NOT parse as crack/uncracked
+  const isNewsFlair = NEWS_FLAIRS.some(f => flair.includes(f));
+  if (isNewsFlair) {
+    return { gameName: null, status: 'news', crackGroup: null, drm: null, sceneFilename: null,
+      createdDate: post.created_utc ? new Date(post.created_utc*1000).toISOString().split('T')[0] : null,
+      tag: 'scene', isHV: false };
+  }
+
   const isHV = HYPERVISOR_PATTERNS.some(p => p.test(fullText)) || flair.includes('HYPERVISOR') || flair.includes('HV BYPASS');
   if (isHV) {
-    // Hypervisor bypass = cracked but also flagged as hypervisor
     status = 'cracked';
     gameName = title.replace(/^\[.*?\]\s*/,'').replace(/hypervisor\s*bypass/i,'').replace(/[-–].*$/,'').trim();
   } else {
-    if (flair.includes('CRACKED')||flair.includes('SCENE')) status='cracked';
-    else if (flair.includes('UNCRACKED')||flair.includes('DENUVO')) status='uncracked';
+    // Only set cracked/uncracked from flair if flair is explicitly those values
+    if (flair === 'CRACKED' || flair === 'SCENE RELEASE' || flair === 'CRACKED - SCENE') status = 'cracked';
+    else if (flair === 'UNCRACKED' || flair === 'DENUVO') status = 'uncracked';
+
+    // Title pattern matching for crack releases
     for (const p of CRACK_PATTERNS) { const m=title.match(p); if(m){gameName=m[1]?.trim();crackGroup=m[2]?.trim();status='cracked';break;} }
     if (!gameName) { for (const p of UNCRACKED_PATTERNS) { const m=title.match(p); if(m){gameName=m[1]?.trim();status='uncracked';break;} } }
+
+    // If no pattern matched and no clear flair, this is just a news/discussion post
+    if (!gameName && status === 'unknown') {
+      return { gameName: null, status: 'news', crackGroup: null, drm: null, sceneFilename: null,
+        createdDate: post.created_utc ? new Date(post.created_utc*1000).toISOString().split('T')[0] : null,
+        tag: 'scene', isHV: false };
+    }
     if (!gameName) gameName = title.replace(/^\[.*?\]\s*/,'').trim();
   }
+
   let drm = null;
   for (const [name,pattern] of Object.entries(DRM_PATTERNS)) { if(pattern.test(fullText)){drm=name;break;} }
   const sceneFilename = extractSceneFilename(title);
   const createdDate = post.created_utc ? new Date(post.created_utc*1000).toISOString().split('T')[0] : null;
   let tag = 'scene';
-  if (isHV) tag='bypass'; else if (flair.includes('CRACK')||status==='cracked') tag='release'; else if (drm) tag='drm'; else if (/update|patch/i.test(title)) tag='update'; else if (/bypass|remove/i.test(title)) tag='bypass';
+  if (isHV) tag='bypass';
+  else if (status==='cracked') tag='release';
+  else if (drm) tag='drm';
+  else if (/update|patch/i.test(title)) tag='update';
+  else if (/bypass|remove/i.test(title)) tag='bypass';
   return { gameName, status, crackGroup, drm, sceneFilename, createdDate, tag, isHV };
 }
 
@@ -221,7 +249,8 @@ async function syncCrackWatch() {
     const postUrl = `https://reddit.com${post.permalink}`;
     const postDate = post.created_utc ? new Date(post.created_utc*1000).toISOString().split('T')[0] : null;
     try { dbUpsertNews({ reddit_id:post.id, title:post.title, body:(post.selftext||'').slice(0,2000), url:postUrl, author:post.author, score:post.score||0, tag:parsed.tag, created_utc:post.created_utc||0, is_hypervisor:parsed.isHV }); news++; } catch{}
-    if (!parsed.gameName || parsed.gameName.length < 2) continue;
+    // Skip news/discussion posts — don't add to games table
+    if (parsed.status === 'news' || !parsed.gameName || parsed.gameName.length < 2) continue;
     const existing = dbFindGame(g => g.title?.toLowerCase() === parsed.gameName.toLowerCase());
     const crackTs = post.created_utc ? post.created_utc*1000 : Date.now();
     if (parsed.isHV) {
@@ -303,12 +332,17 @@ function formatGameRow(g) {
 
 app.get('/api/health', (req,res) => {
   const meta=readMeta(), games=readTable('games');
-  res.json({ status:'ok', lastSync:meta.last_reddit_sync, historyImported:!!meta.history_imported, historyTotal:meta.history_total, gamesInDb:games.length, cracked:games.filter(g=>g.status==='cracked'||g.status==='hypervisor_bypass').length, uncracked:games.filter(g=>g.status==='uncracked').length, hypervisor:games.filter(g=>g.status==='hypervisor_bypass').length, uptime:Math.round(process.uptime())+'s' });
+  res.json({ status:'ok', lastSync:meta.last_reddit_sync, historyImported:!!meta.history_imported, historyTotal:meta.history_total, gamesInDb:games.length, cracked:games.filter(g=>g.status==='cracked').length, uncracked:games.filter(g=>g.status==='uncracked').length, hypervisor:games.filter(g=>g.is_hypervisor_bypass).length, uptime:Math.round(process.uptime())+'s' });
 });
 
 app.get('/api/reimport', async (req,res) => {
+  // Remove all games that only came from the old bulk import (status=unknown, no reddit data)
+  // This clears stale 10-year data so the fresh 2-year import starts clean
+  const games = readTable('games');
+  const kept = games.filter(g => g.status !== 'unknown' || g.reddit_post_url || g.hypervisor_post_url);
+  writeTable('games', kept);
   const meta=readMeta(); meta.history_imported=false; writeMeta(meta);
-  res.json({ ok:true, message:'Reimport started — check /api/health in ~10 min' });
+  res.json({ ok:true, message:`Cleared ${games.length - kept.length} stale games. 2-year reimport started — check /api/health in ~5 min` });
   bulkImportHistory(true);
 });
 
