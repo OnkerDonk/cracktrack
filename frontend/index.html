@@ -23,10 +23,12 @@
       --accent: #00ff88;
       --accent2: #ff3366;
       --accent3: #00aaff;
+      --accent4: #aa44ff; /* hypervisor bypass colour */
       --text: #e0e0f0;
       --muted: #6060a0;
       --cracked: #00ff88;
       --uncracked: #ff3366;
+      --hypervisor: #aa44ff;
       --safe-top: env(safe-area-inset-top);
       --safe-bottom: env(safe-area-inset-bottom);
     }
@@ -37,337 +39,257 @@
 
     /* AD BANNERS */
     .ad-top {
-      background: #0d0d1a;
-      border-bottom: 1px solid var(--border);
-      padding: 6px 16px;
-      padding-top: calc(6px + var(--safe-top));
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 44px;
-      flex-shrink: 0;
+      background: #0d0d1a; border-bottom: 1px solid var(--border);
+      padding: 6px 16px; padding-top: calc(6px + var(--safe-top));
+      display: flex; align-items: center; gap: 10px; min-height: 44px; flex-shrink: 0;
     }
     .ad-badge { font-size: 8px; letter-spacing: 2px; color: #303050; border: 1px solid #202035; padding: 2px 5px; border-radius: 2px; flex-shrink: 0; }
     .ad-text { font-size: 11px; color: #404065; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .ad-cta { font-size: 10px; color: #4060a0; border: 1px solid #203050; padding: 3px 10px; border-radius: 3px; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+    .ad-bottom { background: #0d0d1a; border-top: 1px solid var(--border); padding: 6px 16px; display: flex; align-items: center; gap: 10px; min-height: 40px; flex-shrink: 0; }
 
     /* HEADER */
     .header {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-      position: relative;
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      padding: 0 16px; height: 52px; display: flex; align-items: center;
+      gap: 12px; flex-shrink: 0;
     }
     .logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 15px rgba(0,255,136,0.3); }
     .logo span { color: var(--accent2); }
     .header-status { font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
     .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-    .sync-dot.syncing { background: #ffcc00; animation: spin-dot 0.8s linear infinite; }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-    @keyframes spin-dot { to { transform: rotate(360deg); } }
 
-    /* SCROLL AREA */
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-    }
+    /* SCROLL */
+    .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 
-    /* BOTTOM NAV */
+    /* BOTTOM NAV — 5 items now */
     .bottom-nav {
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      flex-shrink: 0;
-      padding-bottom: var(--safe-bottom);
+      background: var(--bg2); border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      flex-shrink: 0; padding-bottom: var(--safe-bottom);
     }
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      padding: 10px 4px;
-      cursor: pointer;
-      color: var(--muted);
-      border: none;
-      background: none;
-      transition: color 0.2s;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 2px; padding: 8px 2px;
+      cursor: pointer; color: var(--muted); border: none; background: none; transition: color 0.2s;
+      position: relative;
     }
     .nav-item.active { color: var(--accent); }
-    .nav-item svg { width: 22px; height: 22px; }
-    .nav-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
-    .nav-badge {
-      position: absolute;
-      top: 6px; right: calc(50% - 18px);
-      background: var(--accent2);
-      color: #fff;
-      font-size: 9px;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-    }
-    .nav-item { position: relative; }
+    .nav-item.hv.active { color: var(--hypervisor); }
+    .nav-item svg { width: 20px; height: 20px; }
+    .nav-label { font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+    .nav-badge { position: absolute; top: 5px; right: calc(50% - 18px); background: var(--accent2); color: #fff; font-size: 9px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 
-    /* AD BOTTOM */
-    .ad-bottom {
-      background: #0d0d1a;
-      border-top: 1px solid var(--border);
-      padding: 6px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 40px;
-      flex-shrink: 0;
-    }
-
-    /* CONTENT PAGES */
+    /* PAGES */
     .page { padding: 14px; display: none; }
     .page.active { display: block; }
 
     /* STATS */
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .stat-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      position: relative;
-      overflow: hidden;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; position: relative; overflow: hidden; }
     .stat-card::after { content:''; position:absolute; top:0;left:0;right:0;height:2px; }
     .stat-card.g::after{background:var(--cracked);}
     .stat-card.r::after{background:var(--uncracked);}
     .stat-card.b::after{background:var(--accent3);}
-    .stat-card.y::after{background:#ffcc00;}
-    .stat-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
-    .stat-val.g{color:var(--cracked);} .stat-val.r{color:var(--uncracked);} .stat-val.b{color:var(--accent3);} .stat-val.y{color:#ffcc00;}
+    .stat-card.p::after{background:var(--hypervisor);}
+    .stat-label { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; }
+    .stat-val.g{color:var(--cracked);} .stat-val.r{color:var(--uncracked);} .stat-val.b{color:var(--accent3);} .stat-val.p{color:var(--hypervisor);}
 
     /* SEARCH */
-    .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
-    .search-input {
-      flex: 1; background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text); padding: 11px 14px; border-radius: 6px;
-      font-family: 'Share Tech Mono', monospace; font-size: 14px; outline: none;
-    }
+    .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .search-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 6px; font-family: 'Share Tech Mono', monospace; font-size: 14px; outline: none; }
     .search-input::placeholder { color: var(--muted); }
     .search-input:focus { border-color: var(--accent3); }
-    .search-btn {
-      background: var(--accent); border: none; color: #000;
-      padding: 11px 18px; border-radius: 6px;
-      font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px;
-      cursor: pointer;
-    }
+    .search-btn { background: var(--accent); border: none; color: #000; padding: 11px 18px; border-radius: 6px; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px; cursor: pointer; }
     .search-btn:disabled { background: #1a3a2a; color: #336644; }
 
     /* CHIPS */
-    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-    .chip {
-      background: var(--bg3); border: 1px solid var(--border); color: var(--muted);
-      padding: 4px 11px; border-radius: 12px; font-size: 11px;
-      font-family: 'Share Tech Mono', monospace; cursor: pointer;
-    }
-    .chip-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); align-self: center; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-family: 'Share Tech Mono', monospace; cursor: pointer; }
+    .chip-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); align-self: center; white-space: nowrap; }
 
-    /* GAME CARD */
-    .game-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 10px; margin-bottom: 12px; overflow: hidden;
-      animation: fadeUp 0.25s ease;
-      display: flex; flex-direction: column;
-    }
+    /* ── GAME CARD ─────────────────────────────────────────── */
+    .game-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; animation: fadeUp 0.22s ease; display: flex; flex-direction: column; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-    .game-card-inner { display: flex; gap: 12px; padding: 14px; }
-    .game-cover {
-      width: 60px; height: 80px; object-fit: cover; border-radius: 4px;
-      background: var(--bg3); flex-shrink: 0;
+
+    .game-card-inner { display: flex; gap: 12px; padding: 12px 14px; }
+
+    .game-cover { width: 56px; height: 75px; object-fit: cover; border-radius: 4px; background: var(--bg3); flex-shrink: 0; }
+    .game-cover-placeholder { width: 56px; height: 75px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+
+    .game-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+
+    /* TITLE BLOCK — clean name + filename underneath */
+    .game-title-block { display: flex; flex-direction: column; gap: 2px; }
+    .game-title { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+    .game-filename {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      color: #404060;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.5px;
     }
-    .game-cover-placeholder {
-      width: 60px; height: 80px; border-radius: 4px; background: var(--bg3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; flex-shrink: 0;
-    }
-    .game-info { flex: 1; min-width: 0; }
-    .game-title { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1.5px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .status-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 9px; border-radius: 10px; font-size: 9px;
-      font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
-    }
+
+    /* STATUS BADGE */
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 10px; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; align-self: flex-start; }
     .status-badge.cracked { background: rgba(0,255,136,0.1); color: var(--cracked); border: 1px solid rgba(0,255,136,0.25); }
     .status-badge.uncracked { background: rgba(255,51,102,0.1); color: var(--uncracked); border: 1px solid rgba(255,51,102,0.25); }
+    .status-badge.hypervisor_bypass { background: rgba(170,68,255,0.1); color: var(--hypervisor); border: 1px solid rgba(170,68,255,0.3); }
     .status-badge.unknown { background: rgba(96,96,160,0.1); color: var(--muted); border: 1px solid #1e1e30; }
     .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+    /* META ROW */
     .game-meta-row { display: flex; gap: 12px; flex-wrap: wrap; }
     .meta-item { display: flex; flex-direction: column; gap: 1px; }
     .meta-key { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
     .meta-val { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); }
-    .meta-val.g { color: var(--cracked); } .meta-val.r { color: var(--uncracked); } .meta-val.b { color: var(--accent3); }
-    .game-actions {
-      display: flex; gap: 8px; padding: 10px 14px;
-      border-top: 1px solid var(--border); background: rgba(255,255,255,0.01);
+    .meta-val.g{color:var(--cracked);} .meta-val.r{color:var(--uncracked);} .meta-val.b{color:var(--accent3);} .meta-val.p{color:var(--hypervisor);}
+
+    /* HYPERVISOR NOTICE inside card */
+    .hv-notice {
+      margin: 0 14px 10px;
+      background: rgba(170,68,255,0.07);
+      border: 1px solid rgba(170,68,255,0.2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--hypervisor);
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .btn-sm {
-      flex: 1; padding: 8px; border-radius: 5px; font-size: 11px; font-weight: 600;
-      letter-spacing: 1px; cursor: pointer; text-transform: uppercase;
-      border: 1px solid var(--border); background: var(--bg3); color: var(--muted);
-      font-family: 'Barlow', sans-serif; text-align: center;
-    }
+    .hv-notice a { color: var(--hypervisor); text-decoration: underline; }
+
+    /* GAME ACTIONS */
+    .game-actions { display: flex; gap: 8px; padding: 8px 14px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.01); }
+    .btn-sm { flex: 1; padding: 7px; border-radius: 5px; font-size: 11px; font-weight: 600; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; border: 1px solid var(--border); background: var(--bg3); color: var(--muted); font-family: 'Barlow', sans-serif; text-align: center; }
     .btn-sm.watch { border-color: rgba(0,170,255,0.3); color: var(--accent3); background: rgba(0,170,255,0.05); }
     .btn-sm.watching { border-color: var(--accent3); color: var(--accent3); background: rgba(0,170,255,0.1); }
     .btn-sm.reddit { border-color: rgba(255,100,0,0.3); color: #ff6600; background: rgba(255,100,0,0.05); }
+    .btn-sm.hv-link { border-color: rgba(170,68,255,0.3); color: var(--hypervisor); background: rgba(170,68,255,0.05); }
 
     /* SECTION HEADERS */
     .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; margin-top: 4px; }
     .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; }
-    .section-badge {
-      background: var(--bg3); border: 1px solid var(--border);
-      color: var(--muted); font-size: 10px; padding: 2px 7px;
-      border-radius: 8px; font-family: 'Share Tech Mono', monospace;
-    }
+    .section-badge { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-size: 10px; padding: 2px 7px; border-radius: 8px; font-family: 'Share Tech Mono', monospace; }
     .section-action { margin-left: auto; font-size: 11px; color: var(--muted); cursor: pointer; font-family: 'Share Tech Mono', monospace; }
+    .section-hint { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 12px; font-family: 'Share Tech Mono', monospace; }
 
-    /* NEWS CARDS */
-    .news-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-left: 3px solid var(--accent3);
-      border-radius: 8px; padding: 14px; margin-bottom: 10px;
-      animation: fadeUp 0.25s ease;
-    }
-    .news-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 7px; flex-wrap: wrap; }
+    /* NEWS */
+    .news-card { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent3); border-radius: 8px; padding: 13px; margin-bottom: 10px; animation: fadeUp 0.22s ease; }
+    .news-card.hv { border-left-color: var(--hypervisor); }
+    .news-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
     .news-tag { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; font-weight: 700; }
     .news-tag.release{background:rgba(0,255,136,0.1);color:var(--cracked);}
-    .news-tag.bypass{background:rgba(0,170,255,0.1);color:var(--accent3);}
+    .news-tag.bypass{background:rgba(170,68,255,0.12);color:var(--hypervisor);}
     .news-tag.drm{background:rgba(255,204,0,0.1);color:#ffcc00;}
     .news-tag.scene{background:rgba(255,51,102,0.1);color:var(--uncracked);}
     .news-tag.update{background:rgba(150,100,255,0.1);color:#aa88ff;}
     .news-date { font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
     .news-score { font-size: 10px; color: #ffcc00; font-family: 'Share Tech Mono', monospace; }
-    .news-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+    .news-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; line-height: 1.4; }
     .news-body { font-size: 12px; color: #7070a0; line-height: 1.5; }
-    .news-link { font-size: 11px; color: #ff6600; margin-top: 6px; display: inline-block; }
+    .news-link { font-size: 11px; color: #ff6600; margin-top: 5px; display: inline-block; }
+    .news-hv-link { font-size: 11px; color: var(--hypervisor); margin-top: 5px; display: inline-block; margin-left: 10px; }
+
+    /* FILTER TABS */
+    .filter-tabs { display: flex; gap: 4px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 4px; font-size: 10px; cursor: pointer; white-space: nowrap; font-family: 'Barlow', sans-serif; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .filter-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,255,136,0.05); }
+    .filter-tab.hv.active { border-color: var(--hypervisor); color: var(--hypervisor); background: rgba(170,68,255,0.05); }
 
     /* WATCHLIST */
-    .watch-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 14px; margin-bottom: 10px;
-      display: flex; gap: 10px; align-items: flex-start;
-      animation: fadeUp 0.25s ease;
-    }
-    .watch-card.cracked { border-color: rgba(0,255,136,0.25); background: rgba(0,255,136,0.02); }
+    .watch-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp 0.22s ease; }
+    .watch-card.cracked { border-color: rgba(0,255,136,0.25); }
+    .watch-card.hypervisor_bypass { border-color: rgba(170,68,255,0.25); background: rgba(170,68,255,0.02); }
     .watch-info { flex: 1; min-width: 0; }
-    .watch-title { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1.5px; margin-bottom: 4px; }
+    .watch-title { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1.5px; margin-bottom: 2px; }
+    .watch-filename { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: #404060; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .watch-meta { font-size: 11px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
-    .watch-cracked-note { font-size: 11px; color: var(--cracked); font-family: 'Share Tech Mono', monospace; margin-top: 4px; }
+    .watch-note { font-size: 11px; font-family: 'Share Tech Mono', monospace; margin-top: 4px; }
+    .watch-note.g { color: var(--cracked); }
+    .watch-note.p { color: var(--hypervisor); }
+    .watch-note.r { color: var(--uncracked); }
     .btn-remove { background: none; border: none; color: #303050; font-size: 20px; cursor: pointer; line-height: 1; padding: 0 4px; }
-    .btn-remove:hover { color: var(--uncracked); }
 
-    /* LOADING */
+    /* HV PAGE */
+    .hv-header-banner {
+      background: linear-gradient(135deg, rgba(170,68,255,0.08), rgba(100,20,180,0.05));
+      border: 1px solid rgba(170,68,255,0.2);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .hv-header-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--hypervisor); margin-bottom: 5px; }
+    .hv-header-desc { font-size: 12px; color: #8060a0; line-height: 1.5; }
+    .hv-header-link { font-size: 11px; color: var(--hypervisor); margin-top: 6px; display: inline-block; }
+
+    /* LOADING / EMPTY */
     .loading { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 32px; color: var(--muted); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 2px; }
     .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to{transform:rotate(360deg)} }
-
-    /* EMPTY STATE */
-    .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
-    .empty-icon { font-size: 36px; margin-bottom: 10px; }
-    .empty-text { font-size: 13px; letter-spacing: 0.5px; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-icon { font-size: 34px; margin-bottom: 10px; }
+    .empty-text { font-size: 12px; letter-spacing: 0.5px; line-height: 1.6; }
 
     /* TOAST */
-    .toast {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      background: var(--bg3); border: 1px solid var(--accent);
-      color: var(--accent); padding: 10px 20px; border-radius: 6px;
-      font-size: 13px; font-family: 'Share Tech Mono', monospace;
-      z-index: 1000; white-space: nowrap;
-      animation: toastIn 0.3s ease;
-    }
-    @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+    .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--bg3); border: 1px solid var(--accent); color: var(--accent); padding: 9px 18px; border-radius: 6px; font-size: 12px; font-family: 'Share Tech Mono', monospace; z-index: 1000; white-space: nowrap; animation: toastIn 0.3s ease; }
+    @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
-    /* FILTER TABS */
-    .filter-tabs { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
-    .filter-tab {
-      background: var(--bg3); border: 1px solid var(--border); color: var(--muted);
-      padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;
-      white-space: nowrap; font-family: 'Barlow', sans-serif; font-weight: 600;
-      letter-spacing: 1px; text-transform: uppercase;
-    }
-    .filter-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,255,136,0.05); }
-
-    .offline-banner {
-      background: rgba(255,51,102,0.1); border-bottom: 1px solid rgba(255,51,102,0.2);
-      padding: 6px 16px; text-align: center; font-size: 11px;
-      color: var(--uncracked); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px;
-    }
+    .offline-banner { background: rgba(255,51,102,0.1); border-bottom: 1px solid rgba(255,51,102,0.2); padding: 5px 16px; text-align: center; font-size: 10px; color: var(--uncracked); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
   </style>
 </head>
 <body>
 <div id="app">
-  <!-- TOP AD -->
+
   <div class="ad-top">
     <span class="ad-badge">AD</span>
     <span class="ad-text">🎮 Best Gaming VPN — Reduce ping, bypass geo-blocks</span>
     <span class="ad-cta">TRY FREE →</span>
   </div>
 
-  <!-- OFFLINE BANNER -->
-  <div class="offline-banner" id="offline-banner" style="display:none">
-    ⚠ YOU ARE OFFLINE — SHOWING CACHED DATA
-  </div>
+  <div class="offline-banner" id="offline-banner" style="display:none">⚠ OFFLINE — SHOWING CACHED DATA</div>
 
-  <!-- HEADER -->
   <div class="header">
     <div class="logo">CRACK<span>TRACK</span></div>
     <div class="header-status" id="sync-status">LIVE</div>
-    <div class="header-right">
-      <div class="sync-dot" id="sync-dot"></div>
-    </div>
+    <div class="header-right"><div class="sync-dot" id="sync-dot"></div></div>
   </div>
 
-  <!-- SCROLL AREA -->
   <div class="scroll-area" id="scroll-area">
 
-    <!-- SEARCH PAGE -->
+    <!-- SEARCH -->
     <div class="page active" id="page-search">
       <div class="stats-grid" id="stats-grid">
         <div class="stat-card g"><div class="stat-label">Cracked</div><div class="stat-val g" id="stat-cracked">—</div></div>
         <div class="stat-card r"><div class="stat-label">Uncracked</div><div class="stat-val r" id="stat-uncracked">—</div></div>
+        <div class="stat-card p"><div class="stat-label">HV Bypass</div><div class="stat-val p" id="stat-hv">—</div></div>
         <div class="stat-card b"><div class="stat-label">Tracked</div><div class="stat-val b" id="stat-total">—</div></div>
-        <div class="stat-card y"><div class="stat-label">Avg Days to Crack</div><div class="stat-val y" id="stat-avg">—</div></div>
       </div>
-
       <div class="search-row">
-        <input class="search-input" id="search-input" placeholder="Search a game..." />
+        <input class="search-input" id="search-input" placeholder="Search 10 years of games..." />
         <button class="search-btn" id="search-btn">GO</button>
       </div>
-
-      <div id="recent-chips" class="chips" style="display:none">
-        <span class="chip-label">RECENT:</span>
-      </div>
-
+      <div id="recent-chips" class="chips" style="display:none"><span class="chip-label">RECENT:</span></div>
       <div id="search-results"></div>
-
-      <!-- DEFAULT: recent cracks -->
       <div id="default-content">
         <div class="section-header">
           <div class="section-title">RECENT CRACKS</div>
           <div class="section-badge" id="recent-count">—</div>
         </div>
+        <div class="section-hint">Showing 20 most recent · Search to explore full history</div>
         <div id="recent-list"></div>
       </div>
     </div>
 
-    <!-- UNCRACKED PAGE -->
+    <!-- UNCRACKED -->
     <div class="page" id="page-uncracked">
       <div class="section-header">
         <div class="section-title">UNCRACKED GAMES</div>
@@ -376,7 +298,21 @@
       <div id="uncracked-list"></div>
     </div>
 
-    <!-- NEWS PAGE -->
+    <!-- HYPERVISOR BYPASS — new page -->
+    <div class="page" id="page-hypervisor">
+      <div class="hv-header-banner">
+        <div class="hv-header-title">⚡ HYPERVISOR BYPASS</div>
+        <div class="hv-header-desc">Games listed here require a hypervisor (VM) bypass to run. These aren't traditional cracks — the game may still have DRM, but can be played using a virtual machine bypass technique.</div>
+        <a href="https://www.reddit.com/r/CrackWatch/search/?q=hypervisor+bypass&restrict_sr=1&sort=new" target="_blank" class="hv-header-link">Browse all hypervisor posts on r/CrackWatch ↗</a>
+      </div>
+      <div class="section-header">
+        <div class="section-title">HV BYPASS GAMES</div>
+        <div class="section-badge" id="hv-count">—</div>
+      </div>
+      <div id="hypervisor-list"></div>
+    </div>
+
+    <!-- NEWS -->
     <div class="page" id="page-news">
       <div class="section-header">
         <div class="section-title">SCENE NEWS</div>
@@ -385,6 +321,7 @@
       <div class="filter-tabs" id="news-filters">
         <div class="filter-tab active" data-tag="">ALL</div>
         <div class="filter-tab" data-tag="release">RELEASES</div>
+        <div class="filter-tab hv" data-tag="bypass">HV BYPASS</div>
         <div class="filter-tab" data-tag="drm">DRM</div>
         <div class="filter-tab" data-tag="scene">SCENE</div>
         <div class="filter-tab" data-tag="update">UPDATES</div>
@@ -392,7 +329,7 @@
       <div id="news-list"></div>
     </div>
 
-    <!-- WATCHLIST PAGE -->
+    <!-- WATCHLIST -->
     <div class="page" id="page-watchlist">
       <div class="section-header">
         <div class="section-title">MY WATCHLIST</div>
@@ -403,14 +340,12 @@
 
   </div><!-- end scroll-area -->
 
-  <!-- BOTTOM AD -->
   <div class="ad-bottom">
     <span class="ad-badge">AD</span>
     <span class="ad-text">💾 CDKeys — Cheap legit game keys, save up to 80%</span>
     <span class="ad-cta">SHOP →</span>
   </div>
 
-  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -420,8 +355,12 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       <span class="nav-label">Protected</span>
     </button>
+    <button class="nav-item hv" data-page="hypervisor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 7h.01M11 7h6M7 11h2m2 0h6"/></svg>
+      <span class="nav-label">HV Bypass</span>
+    </button>
     <button class="nav-item" data-page="news">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"/><path d="M2 15h4M2 9h4M8 6h8M8 10h8M8 14h8M8 18h5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"/><path d="M8 6h8M8 10h8M8 14h5"/></svg>
       <span class="nav-label">News</span>
     </button>
     <button class="nav-item" data-page="watchlist">
@@ -434,18 +373,16 @@
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-// 🔧 CHANGE THIS to your deployed backend URL once you deploy to Render/Railway
 const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:3001'
-  : 'https://cracktrack-api.onrender.com'; // ← UPDATE THIS after deploy
+  : 'https://YOUR-BACKEND-URL.onrender.com'; // ← UPDATE THIS after deploy
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let currentPage = 'search';
 let watchlist = JSON.parse(localStorage.getItem('ct_watchlist') || '[]');
 let sessionId = localStorage.getItem('ct_session') || (() => {
   const id = 'sess_' + Math.random().toString(36).slice(2);
-  localStorage.setItem('ct_session', id);
-  return id;
+  localStorage.setItem('ct_session', id); return id;
 })();
 let recentSearches = JSON.parse(localStorage.getItem('ct_recent') || '[]');
 let newsTag = '';
@@ -455,7 +392,7 @@ function fmtDays(n) {
   if (n == null) return '—';
   if (n < 0) return '< 0d';
   if (n === 0) return 'Same day';
-  if (n > 365) return Math.floor(n/365) + 'y ' + (n % 365) + 'd';
+  if (n > 365) return Math.floor(n/365) + 'y ' + (n%365) + 'd';
   return n + 'd';
 }
 function fmtDate(d) {
@@ -469,74 +406,78 @@ function timeAgo(utc) {
   if (s < 86400) return Math.floor(s/3600) + 'h ago';
   return Math.floor(s/86400) + 'd ago';
 }
-function isWatched(gameId) { return watchlist.some(g => g.id === gameId); }
+function isWatched(id) { return watchlist.some(g => g.id === id); }
 function showToast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2800);
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
+}
+function statusLabel(s) {
+  if (s === 'cracked') return 'CRACKED';
+  if (s === 'uncracked') return 'UNCRACKED';
+  if (s === 'hypervisor_bypass') return 'HV BYPASS';
+  return 'UNKNOWN';
 }
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 async function api(path) {
   try {
     const res = await fetch(API_BASE + path);
-    if (!res.ok) throw new Error('API error ' + res.status);
+    if (!res.ok) throw new Error(res.status);
     return await res.json();
-  } catch (e) {
-    console.error(path, e);
-    return null;
-  }
+  } catch (e) { console.error(path, e); return null; }
 }
 
 // ─── GAME CARD ────────────────────────────────────────────────────────────────
-function gameCard(g, opts = {}) {
+function gameCard(g) {
   const watched = isWatched(g.id);
+  const isHV = g.status === 'hypervisor_bypass';
   const card = document.createElement('div');
   card.className = 'game-card';
+
+  // Build meta items
+  let metaItems = '';
+  if (g.release_date) metaItems += `<div class="meta-item"><span class="meta-key">Released</span><span class="meta-val">${fmtDate(g.release_date)}</span></div>`;
+  if (g.status === 'cracked' && g.days_to_crack != null) {
+    metaItems += `<div class="meta-item"><span class="meta-key">Cracked in</span><span class="meta-val g">${fmtDays(g.days_to_crack)}</span></div>`;
+    if (g.crack_group) metaItems += `<div class="meta-item"><span class="meta-key">By</span><span class="meta-val b">${g.crack_group}</span></div>`;
+  }
+  if (g.status === 'uncracked' && g.days_since_release) {
+    metaItems += `<div class="meta-item"><span class="meta-key">Waiting</span><span class="meta-val r">${fmtDays(g.days_since_release)}</span></div>`;
+  }
+  if (isHV && g.days_since_release) {
+    metaItems += `<div class="meta-item"><span class="meta-key">Since Release</span><span class="meta-val p">${fmtDays(g.days_since_release)}</span></div>`;
+  }
+  if (g.drm) metaItems += `<div class="meta-item"><span class="meta-key">DRM</span><span class="meta-val">${g.drm}</span></div>`;
+
   card.innerHTML = `
     <div class="game-card-inner">
       ${g.cover_url
         ? `<img class="game-cover" src="${g.cover_url}" alt="${g.title}" loading="lazy" />`
         : `<div class="game-cover-placeholder">🎮</div>`}
       <div class="game-info">
-        <div class="game-title">${g.title}</div>
-        <span class="status-badge ${g.status}">
-          <span class="dot"></span>
-          ${g.status === 'cracked' ? 'CRACKED' : g.status === 'uncracked' ? 'UNCRACKED' : 'UNKNOWN'}
-        </span>
-        <div class="game-meta-row">
-          <div class="meta-item">
-            <span class="meta-key">Released</span>
-            <span class="meta-val">${fmtDate(g.release_date)}</span>
-          </div>
-          ${g.status === 'cracked' && g.days_to_crack != null ? `
-          <div class="meta-item">
-            <span class="meta-key">Cracked in</span>
-            <span class="meta-val g">${fmtDays(g.days_to_crack)}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-key">By</span>
-            <span class="meta-val b">${g.crack_group || '—'}</span>
-          </div>` : ''}
-          ${g.status === 'uncracked' ? `
-          <div class="meta-item">
-            <span class="meta-key">Waiting</span>
-            <span class="meta-val r">${fmtDays(g.days_since_release)}</span>
-          </div>` : ''}
-          ${g.drm ? `
-          <div class="meta-item">
-            <span class="meta-key">DRM</span>
-            <span class="meta-val">${g.drm}</span>
-          </div>` : ''}
+        <div class="game-title-block">
+          <div class="game-title">${g.title}</div>
+          ${g.scene_filename ? `<div class="game-filename">${g.scene_filename}</div>` : ''}
         </div>
+        <span class="status-badge ${g.status || 'unknown'}">
+          <span class="dot"></span>${statusLabel(g.status)}
+        </span>
+        <div class="game-meta-row">${metaItems}</div>
       </div>
     </div>
+    ${isHV && g.hypervisor_post_url ? `
+      <div class="hv-notice">
+        ⚡ Hypervisor bypass available —
+        <a href="${g.hypervisor_post_url}" target="_blank">view instructions on Reddit ↗</a>
+      </div>` : ''}
     <div class="game-actions">
       <button class="btn-sm ${watched ? 'watching' : 'watch'}" data-action="watch" data-id="${g.id}">
         ${watched ? '✓ WATCHING' : '+ WATCH'}
       </button>
-      ${g.reddit_post_url ? `<a href="${g.reddit_post_url}" target="_blank" class="btn-sm reddit" style="text-decoration:none">REDDIT ↗</a>` : ''}
+      ${isHV && g.hypervisor_post_url
+        ? `<a href="${g.hypervisor_post_url}" target="_blank" class="btn-sm hv-link" style="text-decoration:none">⚡ HV INFO ↗</a>`
+        : (g.reddit_post_url ? `<a href="${g.reddit_post_url}" target="_blank" class="btn-sm reddit" style="text-decoration:none">REDDIT ↗</a>` : '')
+      }
     </div>
   `;
   card.querySelector('[data-action="watch"]')?.addEventListener('click', () => toggleWatch(g));
@@ -545,17 +486,18 @@ function gameCard(g, opts = {}) {
 
 // ─── NEWS CARD ────────────────────────────────────────────────────────────────
 function newsCard(n) {
+  const isHV = n.is_hypervisor || n.tag === 'bypass';
   const div = document.createElement('div');
-  div.className = 'news-card';
+  div.className = 'news-card' + (isHV ? ' hv' : '');
   div.innerHTML = `
     <div class="news-meta">
-      <span class="news-tag ${n.tag || 'scene'}">${(n.tag || 'scene').toUpperCase()}</span>
+      <span class="news-tag ${n.tag || 'scene'}">${isHV ? 'HV BYPASS' : (n.tag || 'scene').toUpperCase()}</span>
       <span class="news-date">${timeAgo(n.created_utc)}</span>
       <span class="news-score">▲ ${n.score || 0}</span>
     </div>
     <div class="news-title">${n.title}</div>
     ${n.body ? `<div class="news-body">${n.body.slice(0, 200)}${n.body.length > 200 ? '…' : ''}</div>` : ''}
-    ${n.url ? `<a href="${n.url}" target="_blank" class="news-link">View on Reddit ↗</a>` : ''}
+    ${n.url ? `<a href="${n.url}" target="_blank" class="${isHV ? 'news-hv-link' : 'news-link'}">View on Reddit ↗</a>` : ''}
   `;
   return div;
 }
@@ -564,65 +506,53 @@ function newsCard(n) {
 function toggleWatch(game) {
   if (isWatched(game.id)) {
     watchlist = watchlist.filter(g => g.id !== game.id);
-    api('/api/watchlist').then(() => {}); // fire and forget
-    fetch(API_BASE + '/api/watchlist', {
-      method: 'DELETE',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ session_id: sessionId, game_id: game.id })
-    });
+    fetch(API_BASE + '/api/watchlist', { method: 'DELETE', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ session_id: sessionId, game_id: game.id }) });
     showToast('Removed from watchlist');
   } else {
     watchlist.push(game);
-    fetch(API_BASE + '/api/watchlist', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ session_id: sessionId, game_id: game.id })
-    });
+    fetch(API_BASE + '/api/watchlist', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ session_id: sessionId, game_id: game.id }) });
     showToast('Added to watchlist 👁');
   }
   localStorage.setItem('ct_watchlist', JSON.stringify(watchlist));
   updateWatchBadge();
-  // Refresh watch buttons on page
   document.querySelectorAll(`[data-action="watch"][data-id="${game.id}"]`).forEach(btn => {
-    const watching = isWatched(game.id);
-    btn.className = 'btn-sm ' + (watching ? 'watching' : 'watch');
-    btn.textContent = watching ? '✓ WATCHING' : '+ WATCH';
+    const w = isWatched(game.id);
+    btn.className = 'btn-sm ' + (w ? 'watching' : 'watch');
+    btn.textContent = w ? '✓ WATCHING' : '+ WATCH';
   });
   if (currentPage === 'watchlist') renderWatchlist();
 }
 
 function updateWatchBadge() {
   const badge = document.getElementById('watch-badge');
-  if (watchlist.length > 0) {
-    badge.style.display = 'flex';
-    badge.textContent = watchlist.length;
-  } else {
-    badge.style.display = 'none';
-  }
+  badge.style.display = watchlist.length > 0 ? 'flex' : 'none';
+  badge.textContent = watchlist.length;
   document.getElementById('watchlist-count').textContent = watchlist.length;
 }
 
 function renderWatchlist() {
   const el = document.getElementById('watchlist-list');
-  if (watchlist.length === 0) {
+  if (!watchlist.length) {
     el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No games on your watchlist.<br/>Search and hit + WATCH to add games.</div></div>';
     return;
   }
   el.innerHTML = '';
   watchlist.forEach(g => {
+    const isHV = g.status === 'hypervisor_bypass';
     const card = document.createElement('div');
-    card.className = `watch-card ${g.status}`;
+    card.className = `watch-card ${g.status || ''}`;
     card.innerHTML = `
-      ${g.cover_url ? `<img src="${g.cover_url}" style="width:44px;height:58px;object-fit:cover;border-radius:4px;flex-shrink:0" loading="lazy"/>` : ''}
+      ${g.cover_url ? `<img src="${g.cover_url}" style="width:42px;height:56px;object-fit:cover;border-radius:4px;flex-shrink:0" loading="lazy"/>` : ''}
       <div class="watch-info">
         <div class="watch-title">${g.title}</div>
+        ${g.scene_filename ? `<div class="watch-filename">${g.scene_filename}</div>` : ''}
         <div class="watch-meta">${g.drm || 'Unknown DRM'} · ${fmtDate(g.release_date)}</div>
-        <span class="status-badge ${g.status}" style="margin-top:5px">
-          <span class="dot"></span>
-          ${g.status === 'cracked' ? 'CRACKED' : g.status === 'uncracked' ? 'UNCRACKED' : 'UNKNOWN'}
+        <span class="status-badge ${g.status || 'unknown'}" style="margin-top:4px">
+          <span class="dot"></span>${statusLabel(g.status)}
         </span>
-        ${g.status === 'cracked' && g.crack_group ? `<div class="watch-cracked-note">🔓 ${g.crack_group} · ${fmtDays(g.days_to_crack)}</div>` : ''}
-        ${g.status === 'uncracked' ? `<div class="watch-meta" style="color:var(--uncracked)">⏱ ${fmtDays(g.days_since_release)} without crack</div>` : ''}
+        ${g.status === 'cracked' && g.crack_group ? `<div class="watch-note g">🔓 ${g.crack_group} · ${fmtDays(g.days_to_crack)}</div>` : ''}
+        ${isHV ? `<div class="watch-note p">⚡ HV bypass available${g.hypervisor_post_url ? ' — <a href="' + g.hypervisor_post_url + '" target="_blank" style="color:var(--hypervisor)">Reddit info ↗</a>' : ''}</div>` : ''}
+        ${g.status === 'uncracked' ? `<div class="watch-note r">⏱ ${fmtDays(g.days_since_release)} without crack</div>` : ''}
       </div>
       <button class="btn-remove" data-id="${g.id}">✕</button>
     `;
@@ -631,16 +561,17 @@ function renderWatchlist() {
   });
 }
 
-// ─── PAGES ────────────────────────────────────────────────────────────────────
+// ─── PAGE LOADERS ─────────────────────────────────────────────────────────────
 async function loadStats() {
   const data = await api('/api/stats');
   if (!data) return;
   document.getElementById('stat-cracked').textContent = data.cracked ?? '—';
   document.getElementById('stat-uncracked').textContent = data.uncracked ?? '—';
+  document.getElementById('stat-hv').textContent = data.hypervisor ?? '—';
   document.getElementById('stat-total').textContent = data.total ?? '—';
-  document.getElementById('stat-avg').textContent = data.avgDaysToCrack ? data.avgDaysToCrack + 'd' : '—';
-  const lastSync = data.lastSync ? new Date(data.lastSync).toLocaleTimeString() : 'Never';
-  document.getElementById('sync-status').textContent = 'SYNCED ' + lastSync;
+  if (data.lastSync) {
+    document.getElementById('sync-status').textContent = 'SYNCED ' + new Date(data.lastSync).toLocaleTimeString();
+  }
 }
 
 async function loadRecentCracks() {
@@ -669,13 +600,26 @@ async function loadUncracked() {
   data.games.forEach(g => el.appendChild(gameCard(g)));
 }
 
+async function loadHypervisor() {
+  const el = document.getElementById('hypervisor-list');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>LOADING...</div>';
+  const data = await api('/api/hypervisor?limit=30');
+  el.innerHTML = '';
+  if (!data?.games?.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">⚡</div><div class="empty-text">No hypervisor bypass games tracked yet.<br/>They appear here as posts are found on r/CrackWatch.</div></div>';
+    return;
+  }
+  document.getElementById('hv-count').textContent = data.games.length;
+  data.games.forEach(g => el.appendChild(gameCard(g)));
+}
+
 async function loadNews(tag = '') {
   const el = document.getElementById('news-list');
   el.innerHTML = '<div class="loading"><div class="spinner"></div>LOADING...</div>';
   const data = await api('/api/news?limit=30' + (tag ? `&tag=${tag}` : ''));
   el.innerHTML = '';
   if (!data?.news?.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📰</div><div class="empty-text">No news loaded yet.<br/>Sync runs every 2 hours.</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📰</div><div class="empty-text">No news yet — syncs every 2 hours.</div></div>';
     return;
   }
   data.news.forEach(n => el.appendChild(newsCard(n)));
@@ -685,9 +629,8 @@ async function loadNews(tag = '') {
 async function doSearch(q) {
   q = q.trim();
   if (!q) return;
+  document.getElementById('default-content').style.display = 'none';
   const resultsEl = document.getElementById('search-results');
-  const defaultEl = document.getElementById('default-content');
-  defaultEl.style.display = 'none';
   resultsEl.innerHTML = '<div class="loading"><div class="spinner"></div>SEARCHING...</div>';
 
   recentSearches = [q, ...recentSearches.filter(s => s !== q)].slice(0, 6);
@@ -696,9 +639,8 @@ async function doSearch(q) {
 
   const data = await api('/api/search?q=' + encodeURIComponent(q));
   resultsEl.innerHTML = '';
-
   if (!data?.results?.length) {
-    resultsEl.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No results found for "' + q + '"</div></div>';
+    resultsEl.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No results for "${q}"<br/>Try a different spelling.</div></div>`;
     return;
   }
   data.results.forEach(g => resultsEl.appendChild(gameCard(g)));
@@ -708,15 +650,11 @@ function renderRecentChips() {
   const el = document.getElementById('recent-chips');
   if (!recentSearches.length) { el.style.display = 'none'; return; }
   el.style.display = 'flex';
-  // Remove old chips (keep label)
   [...el.querySelectorAll('.chip')].forEach(c => c.remove());
   recentSearches.forEach(s => {
     const chip = document.createElement('div');
     chip.className = 'chip'; chip.textContent = s;
-    chip.addEventListener('click', () => {
-      document.getElementById('search-input').value = s;
-      doSearch(s);
-    });
+    chip.addEventListener('click', () => { document.getElementById('search-input').value = s; doSearch(s); });
     el.appendChild(chip);
   });
 }
@@ -730,44 +668,43 @@ function switchPage(page) {
   document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
   document.getElementById('scroll-area').scrollTop = 0;
   currentPage = page;
-
   if (!pageLoaded[page]) {
     pageLoaded[page] = true;
     if (page === 'uncracked') loadUncracked();
+    if (page === 'hypervisor') loadHypervisor();
     if (page === 'news') loadNews();
     if (page === 'watchlist') renderWatchlist();
   }
   if (page === 'watchlist') renderWatchlist();
 }
 
-// ─── CHECK WATCHLIST FOR NEW CRACKS ──────────────────────────────────────────
+// ─── WATCHLIST STATUS CHECKER ─────────────────────────────────────────────────
 async function checkWatchlistCracks() {
   const data = await api('/api/watchlist/' + sessionId + '/check');
-  if (!data?.newlyCracked?.length) return;
-  data.newlyCracked.forEach(g => {
-    showToast('🔓 ' + g.title + ' has been cracked!');
-    // Update local watchlist
+  if (!data) return;
+  [...(data.newlyCracked || []), ...(data.newlyBypassed || [])].forEach(g => {
+    const msg = g.status === 'hypervisor_bypass'
+      ? `⚡ ${g.title} has a hypervisor bypass!`
+      : `🔓 ${g.title} has been cracked!`;
+    showToast(msg);
     const idx = watchlist.findIndex(w => w.id === g.id);
     if (idx >= 0) watchlist[idx] = { ...watchlist[idx], ...g };
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Game Cracked! 🔓', { body: g.title + ' has been cracked by ' + (g.crack_group || 'unknown') });
+      new Notification(g.status === 'hypervisor_bypass' ? 'HV Bypass Available ⚡' : 'Game Cracked! 🔓', { body: g.title });
     }
   });
-  localStorage.setItem('ct_watchlist', JSON.stringify(watchlist));
-  updateWatchBadge();
+  if (data.newlyCracked?.length || data.newlyBypassed?.length) {
+    localStorage.setItem('ct_watchlist', JSON.stringify(watchlist));
+    updateWatchBadge();
+  }
 }
 
 // ─── EVENT LISTENERS ──────────────────────────────────────────────────────────
-document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.addEventListener('click', () => switchPage(btn.dataset.page));
-});
+document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
 
 const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
-searchBtn.addEventListener('click', () => doSearch(searchInput.value));
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch(searchInput.value);
-});
+document.getElementById('search-btn').addEventListener('click', () => doSearch(searchInput.value));
+searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(searchInput.value); });
 searchInput.addEventListener('input', () => {
   if (!searchInput.value.trim()) {
     document.getElementById('search-results').innerHTML = '';
@@ -775,10 +712,7 @@ searchInput.addEventListener('input', () => {
   }
 });
 
-document.getElementById('refresh-news').addEventListener('click', () => {
-  pageLoaded['news'] = false;
-  loadNews(newsTag);
-});
+document.getElementById('refresh-news').addEventListener('click', () => { pageLoaded['news'] = false; loadNews(newsTag); });
 
 document.getElementById('news-filters').addEventListener('click', e => {
   const tab = e.target.closest('.filter-tab');
@@ -789,7 +723,6 @@ document.getElementById('news-filters').addEventListener('click', e => {
   loadNews(newsTag);
 });
 
-// Offline detection
 window.addEventListener('online', () => { document.getElementById('offline-banner').style.display = 'none'; });
 window.addEventListener('offline', () => { document.getElementById('offline-banner').style.display = 'block'; });
 if (!navigator.onLine) document.getElementById('offline-banner').style.display = 'block';
@@ -800,12 +733,9 @@ loadRecentCracks();
 renderRecentChips();
 updateWatchBadge();
 setTimeout(checkWatchlistCracks, 4000);
-setInterval(checkWatchlistCracks, 5 * 60 * 1000); // check every 5 min
+setInterval(checkWatchlistCracks, 5 * 60 * 1000);
 
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 </script>
 </body>
 </html>
