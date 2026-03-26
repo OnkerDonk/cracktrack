@@ -307,9 +307,17 @@ app.get('/api/sync',  (req, res) => runSync(res));
 app.post('/api/sync', (req, res) => runSync(res));
 
 app.get('/api/reimport', async (req, res) => {
-  await Game.deleteOne({ igdb_id: -1 }); // remove the "done" marker
-  res.json({ ok: true, message: 'Reimport started' });
+  await Game.deleteMany({ igdb_id: { $lte: 0 } }); // delete the IMPORT_DONE marker
+  res.json({ ok: true, message: 'Marker cleared, reimport started — check /api/health in 10 min' });
   bulkImport(true);
+});
+
+// Test IGDB credentials
+app.get('/api/igdb-test', async (req, res) => {
+  const token = await getToken();
+  if (!token) return res.json({ ok: false, error: 'No IGDB token — check IGDB_CLIENT_ID and IGDB_CLIENT_SECRET in Render' });
+  const games = await igdbQuery('fields name; where platforms=(6); limit 3;');
+  res.json({ ok: true, sample_games: games.map(g => g.name) });
 });
 
 // ── CONNECT & START ───────────────────────────────────────────────────────────
